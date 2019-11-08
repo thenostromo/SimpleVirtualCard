@@ -1,6 +1,7 @@
 <?php
 namespace Maker;
 
+use Entity\CartItem;
 use Entity\Product;
 use Entity\User;
 
@@ -46,5 +47,23 @@ class EntityMaker
         $user->setBalance($item["balance"]);
 
         return $user;
+    }
+
+    /**
+     * @param array $item
+     * @return CartItem|null
+     */
+    public static function makeCartItemFromArray($item)
+    {
+        if (is_bool($item)) {
+            return null;
+        }
+
+        $cartItem = new CartItem();
+        $cartItem->setUserId($item["user_id"]);
+        $cartItem->setProductId($item["product_id"]);
+        $cartItem->setQuantity($item["quantity"]);
+
+        return $cartItem;
     }
 }
