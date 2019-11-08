@@ -8,12 +8,13 @@ use Response\ApiResponse;
 class CartApiController
 {
     /**
-     * @param array $request
+     * @param array $postParams
      * @return string
      */
-    public function addProduct(array $request)
+    public function addProduct(array $postParams)
     {
         $response = null;
+        var_dump($postParams); exit();
         //try {
             /* $userManager = new UserManager();
              $userManager->createUser($request);*/

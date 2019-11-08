@@ -16,12 +16,12 @@ class ProductModel
     /**
      * @var string
      */
-    public $priceDollar;
+    public $price;
 
     public function __construct()
     {
         $this->id = null;
         $this->name = null;
-        $this->priceDollar = null;
+        $this->price = null;
     }
 }

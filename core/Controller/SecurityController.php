@@ -3,35 +3,41 @@ namespace Controller;
 
 use DTO\UserModel;
 use Exception\EmptyRequiredParamsException;
+use Exception\UserAlreadyExistException;
+use Exception\WrongCredentialsException;
+use FormHandler\AuthorizationFormHandler;
+use FormHandler\RegistrationFormHandler;
 use Provider\RouteProvider;
-use FormHandler\SecurityFormHandler;
 
 class SecurityController extends GeneralController
 {
-    /**
-     * @var SecurityFormHandler
-     */
-    private $securityFormHandler;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->securityFormHandler = new SecurityFormHandler();
-    }
-
     /**
      * @param array $postParams
      * @return string
      */
     public function login(array $postParams)
     {
-        $userModel = new UserModel();
         if ($this->sessionManager->isAuthorizedUser()) {
             $this->redirect($this->routeProvider->getUrl(RouteProvider::DEFAULT_CONTROLLER_HOMEPAGE));
         }
 
+        $errorMessage = null;
+        $userModel = new UserModel();
+
+        if (count($postParams) > 0) {
+            $authorizationFormHandler = new AuthorizationFormHandler();
+            $userModel = $authorizationFormHandler->getFormData($postParams);
+            try {
+                $result = $authorizationFormHandler->handleForm($postParams);
+                $this->redirect($this->routeProvider->getUrl(RouteProvider::DEFAULT_CONTROLLER_HOMEPAGE));
+            } catch (WrongCredentialsException $ex) {
+                $errorMessage = "Wrong credentials.";
+            }
+        }
+
         return $this->renderTemplate('login.php', [
-            'userModel' => json_encode($userModel),
+            'userModel' => $userModel,
+            'errorMessage' => $errorMessage,
             'pageTitle' => 'Sign in',
         ]);
     }
@@ -57,14 +63,20 @@ class SecurityController extends GeneralController
 
         $errorMessage = null;
         $userModel = new UserModel();
+
         if (count($postParams) > 0) {
-            $userModel = $this->securityFormHandler->getRegistrationFormData($postParams);
+            $registrationFormHandler = new RegistrationFormHandler();
+            $userModel = $registrationFormHandler->getFormData($postParams);
             try {
-                $result = $this->securityFormHandler->handleRegistrationForm($postParams);
+                $result = $registrationFormHandler->handleForm($postParams);
+                $this->redirect($this->routeProvider->getUrl(RouteProvider::SECURITY_CONTROLLER_LOGIN));
             } catch (EmptyRequiredParamsException $ex) {
                 $errorMessage = "Check the correctness of the entered data";
+            } catch (UserAlreadyExistException $ex) {
+                $errorMessage = "This email is already registered.";
             }
         }
+
         return $this->renderTemplate('registration.php', [
             'userModel' => $userModel,
             'errorMessage' => $errorMessage,

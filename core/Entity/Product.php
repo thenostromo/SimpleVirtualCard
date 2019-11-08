@@ -16,7 +16,7 @@ class Product
     /**
      * @var string
      */
-    private $priceDollar;
+    private $price;
 
     public function __construct()
     {
@@ -60,20 +60,20 @@ class Product
     }
 
     /**
-     * @param string $priceDollar
+     * @param string $price
      * @return $this
      */
-    public function setPriceDollar(string $priceDollar)
+    public function setPrice(string $price)
     {
-        $this->priceDollar = $priceDollar;
+        $this->price = $price;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getPriceDollar()
+    public function getPrice()
     {
-        return $this->priceDollar;
+        return $this->price;
     }
 }

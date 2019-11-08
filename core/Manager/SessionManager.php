@@ -17,10 +17,11 @@ class SessionManager
      */
     public function sessionStart(User $user)
     {
-        if (!$this->isAuthUser()) {
+        if (!$this->isAuthorizedUser()) {
             $_SESSION["id"] = $user->getId();
             $_SESSION["email"] = $user->getEmail();
             $_SESSION["fullname"] = $user->getFullname();
+            $_SESSION["balance"] = $user->getBalance();
         }
     }
 

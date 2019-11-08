@@ -20,14 +20,33 @@
                             Please enter your email and password.
                         </div>
                         <br/>
+                        <?php if ($errorMessage): ?>
+                            <div class="alert alert-danger" role="alert">
+                                <?php echo $errorMessage; ?>
+                            </div>
+                        <?php endif; ?>
                         <div class="form-group align-items-center">
                             <form id="form" action="#" method="POST">
                                 <div class="form-group">
-                                    <input type="email" class="form-control" name="warningFieldEmail" id="fieldEmail" placeholder="Enter email">
+                                    <input
+                                        type="email"
+                                        class="form-control"
+                                        name="fieldEmail"
+                                        id="fieldEmail"
+                                        placeholder="Enter email"
+                                        value="<?php echo $userModel->email; ?>"
+                                    >
                                     <span class="text-danger" id="warningFieldEmail" style="display: none;">Enter your email.</span>
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" class="form-control" name="fieldPassword" id="fieldPassword" placeholder="Enter password">
+                                    <input
+                                        type="password"
+                                        class="form-control"
+                                        name="fieldPassword"
+                                        id="fieldPassword"
+                                        placeholder="Enter password"
+                                        value="<?php echo $userModel->password; ?>"
+                                    >
                                     <span class="text-danger" id="warningFieldPassword" style="display: none;">Enter your password.</span>
                                 </div>
                                 <button type="button" onclick="submitForm()" class="btn btn-primary">Sign in</button>

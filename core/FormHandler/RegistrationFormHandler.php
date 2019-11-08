@@ -5,12 +5,18 @@ use DTO\UserModel;
 use Manager\UserManager;
 use Validator\FormValidator;
 use Exception\EmptyRequiredParamsException;
+use Exception\UserAlreadyExistException;
 
-class SecurityFormHandler
+class RegistrationFormHandler implements FormHandlerInterface
 {
-    public function handleRegistrationForm(array $postParams)
+    /**
+     * @param array $postParams
+     * @throws EmptyRequiredParamsException
+     * @throws UserAlreadyExistException
+     */
+    public function handleForm(array $postParams)
     {
-        if ($this->emptyRegistrationFormParam($postParams)) {
+        if ($this->emptyFormPostParam($postParams)) {
             throw new EmptyRequiredParamsException();
         }
 
@@ -19,7 +25,7 @@ class SecurityFormHandler
         $userModel->email = FormValidator::prepareData($postParams["fieldEmail"]);
         $userModel->fullname = FormValidator::prepareData($postParams["fieldFullName"]);
 
-        if ($this->emptyRegistrationFormParam($postParams)) {
+        if ($this->emptyFormModel($userModel)) {
             throw new EmptyRequiredParamsException();
         }
 
@@ -31,7 +37,7 @@ class SecurityFormHandler
      * @param array $postParams
      * @return UserModel
      */
-    public function getRegistrationFormData(array $postParams)
+    public function getFormData(array $postParams)
     {
         $userModel = new UserModel();
         $userModel->password = array_key_exists("fieldPassword", $postParams) ? $postParams["fieldPassword"] : null;
@@ -44,7 +50,7 @@ class SecurityFormHandler
      * @param UserModel $userModel
      * @return bool
      */
-    private function emptyRegistrationFormUserModel(UserModel $userModel)
+    public function emptyFormModel($userModel)
     {
         return (!$userModel->password || !$userModel->email || !$userModel->fullname);
     }
@@ -53,7 +59,7 @@ class SecurityFormHandler
      * @param array $postParams
      * @return bool
      */
-    private function emptyRegistrationFormParam(array $postParams)
+    public function emptyFormPostParam(array $postParams)
     {
         return (!array_key_exists("fieldEmail", $postParams)
             || !array_key_exists("fieldPassword", $postParams)

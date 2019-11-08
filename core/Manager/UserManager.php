@@ -2,8 +2,12 @@
 namespace Manager;
 
 use DTO\UserModel;
+use Entity\User;
 use Exception\UserAlreadyExistException;
+use Exception\WrongCredentialsException;
+use Reader\ParameterReader;
 use Repository\UserRepository;
+use Worker\PasswordWorker;
 
 class UserManager
 {
@@ -12,34 +16,22 @@ class UserManager
      */
     private $userRepository;
 
+    /**
+     * @var PasswordWorker
+     */
+    private $passwordWorker;
+
     public function __construct()
     {
         $databaseManager = new DatabaseManager();
         $connection = $databaseManager->getConnection();
 
         $this->userRepository = new UserRepository($connection);
-    }
-
-    private function generateUserSalt()
-    {
-        $Blowfish_Pre = '$2a$05$';
-        $Blowfish_End = '$';
-        $Allowed_Chars =
-            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./';
-        $Chars_Len = 63;
-        $Salt_Length = 21;
-        $mysql_date = date( 'Y-m-d' );
-        $salt = "";
-        for($i=0; $i<=$Salt_Length; $i++)
-        {
-            $salt .= $Allowed_Chars[mt_rand(0,$Chars_Len)];
-        }
-        $bcrypt_salt = $Blowfish_Pre . $salt . $Blowfish_End;
-        return $bcrypt_salt;
+        $this->passwordWorker = new PasswordWorker();
     }
 
     /**
-     * @param UserModel $request
+     * @param UserModel $userModel
      * @throws UserAlreadyExistException
      */
     public function createUser(UserModel $userModel)
@@ -48,58 +40,29 @@ class UserManager
             throw new UserAlreadyExistException();
         }
 
-        $bcrypt_salt = $this->generateUserSalt();
-        $hashed_password = crypt($userModel->password, $bcrypt_salt);
+        $salt = $this->passwordWorker->generateUserSalt();
+        $hashedPassword = crypt($userModel->password, $salt);
 
-        /*
-         * $sql = "SELECT salt, password FROM users WHERE email='$email'";
-$result = mysql_query($sql) or die( mysql_error() );
-$row = mysql_fetch_assoc($result);
-$hashed_pass = crypt($password, $Blowfish_Pre . $row['salt'] . $Blowfish_End);
-if ($hashed_pass == $row['password']) {
-    echo 'Password verified!';
-} else {
-    echo 'There was a problem with your user name or password.';
-}
-         */
-        var_dump($hashed_password, $bcrypt_salt, $userModel); exit();
-var_dump(123); exit();
+        $parameterReader = new ParameterReader();
+        $userModel->balance = $parameterReader->parameters["default_user_balance"];
 
-        $this->databaseManager->createUser($userModel);
+        $this->userRepository->createUser($userModel, $hashedPassword, $salt);
     }
 
     /**
-     * @param array $request
-     * @throws EmptyRequiredParamsException
-     * @throws InvalidDataException
+     * @param UserModel $userModel
      * @throws WrongCredentialsException
      */
-    public function authUser(array $request)
+    public function authUser(UserModel $userModel)
     {
-        $username = array_key_exists("username", $request) ? $request["username"] : null;
-        $password = array_key_exists("password", $request) ? $request["password"] : null;
+        /** @var User $foundUser */
+        $foundUser = $this->userRepository->getUserInfoByEmail($userModel->email);
 
-        if (!$username || !$password) {
-            throw new EmptyRequiredParamsException();
-        }
-
-        $userModel = new UserModel();
-        $userModel->username = FormValidator::prepareData($username);
-        $userModel->password = FormValidator::prepareData($password);
-
-        if (!FormValidator::isValidAuthForm($userModel)) {
-            throw new InvalidDataException();
-        }
-
-        $userInfo = $this->databaseManager->getUserInfo($userModel);
-
-        if (!$userInfo) {
+        if (!$foundUser || !$this->passwordWorker->isPasswordValid($userModel->password, $foundUser->getPassword(), $foundUser->getSalt())) {
             throw new WrongCredentialsException();
         }
 
-        $user = new User();
-        $user->makeFromArray($userInfo);
-
-        $this->sessionManager->sessionStart($user);
+        $sessionManager = new SessionManager();
+        $sessionManager->sessionStart($foundUser);
     }
 }

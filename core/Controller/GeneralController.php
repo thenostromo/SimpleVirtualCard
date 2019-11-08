@@ -35,12 +35,32 @@ class GeneralController
         }
 
         $params["hostWithScheme"] = $this->routeProvider->getUrl(RouteProvider::HOST_WITH_SCHEME);
-        $params["isAuthorized"] = $this->sessionManager->isAuthorizedUser();
-        $params["url"] = [
+        $isAuthorizedUser = $this->sessionManager->isAuthorizedUser();
+        $params["user"] = [
+            "isAuthorized" => $isAuthorizedUser,
+            "id" => null,
+            "email" => null,
+            "fullname" => null,
+            "balance" => null
+        ];
+        if ($isAuthorizedUser) {
+            $params["user"]["id"] = $this->sessionManager->getSessionInfo()["id"];
+            $params["user"]["email"] = $this->sessionManager->getSessionInfo()["email"];
+            $params["user"]["fullname"] = $this->sessionManager->getSessionInfo()["fullname"];
+            $params["user"]["balance"] = $this->sessionManager->getSessionInfo()["balance"];
+        }
+        $urls = [
             "signIn" => $this->routeProvider->getUrl(RouteProvider::SECURITY_CONTROLLER_LOGIN),
             "registration" => $this->routeProvider->getUrl(RouteProvider::SECURITY_CONTROLLER_REGISTRATION),
             "logout" => $this->routeProvider->getUrl(RouteProvider::SECURITY_CONTROLLER_LOGOUT)
         ];
+        if (array_key_exists("url", $params)) {
+            foreach ($urls as $key => $value) {
+                $params["url"][$key] = $value;
+            }
+        } else {
+            $params["url"] = $urls;
+        }
 
         if (!key_exists('pageTitle', $params)) {
             $params['pageTitle'] = 'SimpleVirtualCart';

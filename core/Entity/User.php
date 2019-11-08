@@ -28,9 +28,24 @@ class User
      */
     private $fullname;
 
+    /**
+     * @var string
+     */
+    private $balance;
+
     public function __construct()
     {
         $this->id = null;
+    }
+
+    /**
+     * @param int|null $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
     }
 
     /**
@@ -114,6 +129,24 @@ class User
     }
 
     /**
+     * @param string $balance
+     * @return $this
+     */
+    public function setBalance(string $balance)
+    {
+        $this->balance = $balance;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBalance()
+    {
+        return $this->balance;
+    }
+
+    /**
      * @param array $userArray
      */
     public function makeFromArray(array $userArray)
@@ -122,16 +155,5 @@ class User
 
         $this->setEmail($userArray["email"]);
         $this->setFullname($userArray["fullname"]);
-    }
-
-    /**
-     * @param array $sessionInfo
-     */
-    public function loadFromSession($sessionInfo)
-    {
-        $this->id = $sessionInfo["id"];
-
-        $this->setEmail($sessionInfo["email"]);
-        $this->setFullname($sessionInfo["fullname"]);
     }
 }

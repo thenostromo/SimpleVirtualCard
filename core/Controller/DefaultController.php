@@ -11,10 +11,6 @@ class DefaultController extends GeneralController
      */
     public function homepage()
     {
-        if (!$this->sessionManager->isAuthorizedUser()) {
-            $this->redirect($this->routeProvider->getUrl(RouteProvider::SECURITY_CONTROLLER_LOGIN));
-        }
-
         $productManager = new ProductManager();
 
         return $this->renderTemplate('homepage.php',  [

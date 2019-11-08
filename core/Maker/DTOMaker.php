@@ -17,7 +17,7 @@ class DTOMaker
             $productModel = new ProductModel();
             $productModel->id = $product->getId();
             $productModel->name = $product->getName();
-            $productModel->priceDollar = $product->getPriceDollar();
+            $productModel->price = $product->getPrice();
 
             $result[] = $productModel;
         }

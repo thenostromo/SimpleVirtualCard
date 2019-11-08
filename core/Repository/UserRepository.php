@@ -22,14 +22,35 @@ class UserRepository
     }
 
     /**
-     * @return Product[]
+     * @param UserModel $userModel
+     * @param string $hashedPassword
+     * @param string $salt
+     * @return mixed
      */
-    public function getProductList()
+    public function createUser($userModel, $hashedPassword, $salt)
     {
-        $stm = $this->connection->prepare("SELECT * FROM product");
+        $stm = $this->connection->prepare("INSERT INTO user (email, password, salt, fullname, balance) VALUES (:email, :password, :salt, :fullname, :balance)");
+        $stm->bindValue(":email", $userModel->email);
+        $stm->bindValue(":password", $hashedPassword);
+        $stm->bindValue(":salt", $salt);
+        $stm->bindValue(":fullname", $userModel->fullname);
+        $stm->bindValue(":balance", $userModel->balance);
         $stm->execute();
 
-        return EntityMaker::makeProductListFromArray($stm->fetchAll(\PDO::FETCH_ASSOC));
+        return $stm->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param string $email
+     * @return boolean
+     */
+    public function getUserInfoByEmail(string $email)
+    {
+        $stm = $this->connection->prepare("SELECT * FROM user WHERE email = :email");
+        $stm->bindValue(":email", $email);
+        $stm->execute();
+
+        return EntityMaker::makeUserFromArray($stm->fetch(\PDO::FETCH_ASSOC));
     }
 
     /**
