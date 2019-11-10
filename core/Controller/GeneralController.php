@@ -27,10 +27,11 @@ class GeneralController
      * @param array $params
      * @return string
      */
-    protected function renderTemplate($template, $params)
+    protected function renderTemplate(string $template, array $params): string
     {
         $template = sprintf("%s/../templates/%s", __DIR__, $template);
-        if (!file_exists($template)) {
+        if (!file_exists($template))
+        {
             return '';
         }
 
@@ -43,7 +44,8 @@ class GeneralController
             "fullname" => null,
             "balance" => null
         ];
-        if ($isAuthorizedUser) {
+        if ($isAuthorizedUser)
+        {
             $params["user"]["id"] = $this->sessionManager->getSessionInfo()["id"];
             $params["user"]["email"] = $this->sessionManager->getSessionInfo()["email"];
             $params["user"]["fullname"] = $this->sessionManager->getSessionInfo()["fullname"];
@@ -52,21 +54,28 @@ class GeneralController
         $urls = [
             "signIn" => $this->routeProvider->getUrl(RouteProvider::SECURITY_CONTROLLER_LOGIN),
             "registration" => $this->routeProvider->getUrl(RouteProvider::SECURITY_CONTROLLER_REGISTRATION),
-            "logout" => $this->routeProvider->getUrl(RouteProvider::SECURITY_CONTROLLER_LOGOUT)
+            "logout" => $this->routeProvider->getUrl(RouteProvider::SECURITY_CONTROLLER_LOGOUT),
+            "profileCart" => $this->routeProvider->getUrl(RouteProvider::PROFILE_CONTROLLER_CART)
         ];
-        if (array_key_exists("url", $params)) {
-            foreach ($urls as $key => $value) {
+        if (array_key_exists("url", $params))
+        {
+            foreach ($urls as $key => $value)
+            {
                 $params["url"][$key] = $value;
             }
-        } else {
+        }
+        else
+        {
             $params["url"] = $urls;
         }
 
-        if (!key_exists('pageTitle', $params)) {
+        if (!key_exists('pageTitle', $params))
+        {
             $params['pageTitle'] = 'SimpleVirtualCart';
         }
 
-        if (is_array($params)){
+        if (is_array($params))
+        {
             extract($params);
         }
 
@@ -78,7 +87,7 @@ class GeneralController
     /**
      * @param string $url
      */
-    protected function redirect($url)
+    protected function redirect(string $url)
     {
         header('Location: ' . $url,true, 301);
     }

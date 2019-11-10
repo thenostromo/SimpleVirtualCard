@@ -10,14 +10,20 @@ class RouteProvider
     const DEFAULT_CONTROLLER_HOMEPAGE = "/";
     const HOST_WITH_SCHEME = "hostWithScheme";
 
+    const PROFILE_CONTROLLER_CART = "cart";
+
+    const ORDER_CONTROLLER_MAKE_ORDER = "makeOrder";
+
     const API_CART_API_CONTROLLER_ADD_PRODUCT = "addProduct";
+    const API_CART_API_CONTROLLER_ADD_PRODUCT_UNIT = "addProductUnit";
+    const API_CART_API_CONTROLLER_REMOVE_PRODUCT_UNIT = "removeProductUnit";
+    const API_CART_API_CONTROLLER_REMOVE_PRODUCT = "removeProduct";
 
     /**
      * @param string $controller
-     * @param bool $isFullUrl
      * @return string|null
      */
-    public function getUrl($controller)
+    public function getUrl(string $controller): ?string
     {
         $mainUrl = sprintf("%s%s",
             (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http"),
@@ -28,7 +34,7 @@ class RouteProvider
                 return sprintf("%s/api/%s", $mainUrl, $controller);
                 break;
             case($this->isMainControllers($controller)):
-                if ($controller === RouteProvider::DEFAULT_CONTROLLER_HOMEPAGE || $controller === RouteProvider::HOST_WITH_SCHEME) {
+                if ($controller === self::DEFAULT_CONTROLLER_HOMEPAGE || $controller === self::HOST_WITH_SCHEME) {
                     return $mainUrl;
                 }
                 return sprintf("%s/%s", $mainUrl, $controller);
@@ -43,23 +49,22 @@ class RouteProvider
 
     /**
      * @param string $controller
-     * @param bool $isFullUrl
      * @return string|null
      */
-    public function getRoute($controller)
+    public function getRoute(string $controller): ?string
     {
         switch (true) {
             case($this->isApiControllers($controller)):
                 return sprintf("/api/%s", $controller);
                 break;
             case($this->isMainControllers($controller)):
-                if ($controller === RouteProvider::DEFAULT_CONTROLLER_HOMEPAGE || $controller === RouteProvider::HOST_WITH_SCHEME) {
+                if ($controller === self::DEFAULT_CONTROLLER_HOMEPAGE || $controller === self::HOST_WITH_SCHEME) {
                     return $controller;
                 }
                 return sprintf("/%s", $controller);
                 break;
             case($this->isProfileControllers($controller)):
-                //return sprintf("/profile/%s", $mainUrl);
+                return sprintf("/profile/%s", $controller);
                 break;
             default:
                 return null;
@@ -70,30 +75,34 @@ class RouteProvider
      * @param string $controller
      * @return bool
      */
-    private function isApiControllers(string $controller)
+    private function isApiControllers(string $controller): bool
     {
-        return ($controller === RouteProvider::API_CART_API_CONTROLLER_ADD_PRODUCT);
+        return ($controller === self::API_CART_API_CONTROLLER_ADD_PRODUCT
+            || $controller === self::API_CART_API_CONTROLLER_ADD_PRODUCT_UNIT
+            || $controller === self::API_CART_API_CONTROLLER_REMOVE_PRODUCT_UNIT
+            || $controller === self::API_CART_API_CONTROLLER_REMOVE_PRODUCT);
     }
 
     /**
      * @param string $controller
      * @return bool
      */
-    private function isMainControllers(string $controller)
+    private function isMainControllers(string $controller): bool
     {
-        return ($controller === RouteProvider::SECURITY_CONTROLLER_REGISTRATION
-            || $controller === RouteProvider::SECURITY_CONTROLLER_LOGIN
-            || $controller === RouteProvider::SECURITY_CONTROLLER_LOGOUT
-            || $controller === RouteProvider::DEFAULT_CONTROLLER_HOMEPAGE
-            || $controller === RouteProvider::HOST_WITH_SCHEME);
+        return ($controller === self::SECURITY_CONTROLLER_REGISTRATION
+            || $controller === self::SECURITY_CONTROLLER_LOGIN
+            || $controller === self::SECURITY_CONTROLLER_LOGOUT
+            || $controller === self::DEFAULT_CONTROLLER_HOMEPAGE
+            || $controller === self::HOST_WITH_SCHEME);
     }
 
     /**
      * @param string $controller
      * @return bool
      */
-    private function isProfileControllers(string $controller)
-    {return false;
-        //return ($controller === RouteProvider::PROFILE_CONTROLLER_VIEW);
+    private function isProfileControllers(string $controller): bool
+    {
+        return ($controller === self::PROFILE_CONTROLLER_CART
+            || $controller === self::ORDER_CONTROLLER_MAKE_ORDER);
     }
 }

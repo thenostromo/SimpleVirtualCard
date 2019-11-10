@@ -27,7 +27,7 @@ class UserRepository
      * @param string $salt
      * @return mixed
      */
-    public function createUser($userModel, $hashedPassword, $salt)
+    public function createUser(UserModel $userModel, string $hashedPassword, string $salt): bool
     {
         $stm = $this->connection->prepare("INSERT INTO user (email, password, salt, fullname, balance) VALUES (:email, :password, :salt, :fullname, :balance)");
         $stm->bindValue(":email", $userModel->email);
@@ -35,16 +35,28 @@ class UserRepository
         $stm->bindValue(":salt", $salt);
         $stm->bindValue(":fullname", $userModel->fullname);
         $stm->bindValue(":balance", $userModel->balance);
-        $stm->execute();
 
-        return $stm->fetch(\PDO::FETCH_ASSOC);
+        return $stm->execute();
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function updateUserBalance(User $user): bool
+    {
+        $stm = $this->connection->prepare("UPDATE user SET balance = :balance WHERE id = :userId");
+        $stm->bindValue(":balance", $user->getBalance());
+        $stm->bindValue(":userId", $user->getId());
+
+        return $stm->execute();
     }
 
     /**
      * @param string $email
-     * @return boolean
+     * @return User|null
      */
-    public function getUserInfoByEmail(string $email)
+    public function getUserInfoByEmail(string $email): ?User
     {
         $stm = $this->connection->prepare("SELECT * FROM user WHERE email = :email");
         $stm->bindValue(":email", $email);

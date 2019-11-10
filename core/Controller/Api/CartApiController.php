@@ -1,7 +1,6 @@
 <?php
 namespace Controller\Api;
 
-use DTO\CartItemModel;
 use Exception\EmptyRequiredParamsException;
 use Manager\CartManager;
 use Manager\SessionManager;
@@ -32,20 +31,23 @@ class CartApiController
      * @param array $postParams
      * @return false|string
      */
-    public function addProduct(array $postParams)
+    public function changeCart(array $postParams): string
     {
         $response = null;
 
-        try {
+        try
+        {
             $cartApiRequestHandler = new CartApiRequestHandler();
             $cartApiRequestHandler->handleRequest($postParams, RouteProvider::API_CART_API_CONTROLLER_ADD_PRODUCT);
 
             $cartItemModel = $cartApiRequestHandler->getCartItemModel();
             $cartItemModel->userId = $this->sessionManager->getSessionInfo()["id"];
 
-            $this->cartManager->addCartItem($cartItemModel);
+            $this->cartManager->changeCart($cartItemModel);
             $response = new ApiResponse(ApiProvider::API_RESPONSE_STATUS_SUCCESS);
-        } catch (EmptyRequiredParamsException $ex) {
+        }
+        catch (EmptyRequiredParamsException $ex)
+        {
             $response = new ApiResponse(ApiProvider::API_RESPONSE_STATUS_FAILED, "Check the correctness of the entered data");
         }
 

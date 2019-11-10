@@ -16,7 +16,8 @@ class RegistrationFormHandler implements FormHandlerInterface
      */
     public function handleForm(array $postParams)
     {
-        if ($this->emptyFormPostParam($postParams)) {
+        if ($this->emptyFormPostParam($postParams))
+        {
             throw new EmptyRequiredParamsException();
         }
 
@@ -25,7 +26,8 @@ class RegistrationFormHandler implements FormHandlerInterface
         $userModel->email = FormValidator::prepareData($postParams["fieldEmail"]);
         $userModel->fullname = FormValidator::prepareData($postParams["fieldFullName"]);
 
-        if ($this->emptyFormModel($userModel)) {
+        if ($this->emptyFormModel($userModel))
+        {
             throw new EmptyRequiredParamsException();
         }
 
@@ -37,7 +39,7 @@ class RegistrationFormHandler implements FormHandlerInterface
      * @param array $postParams
      * @return UserModel
      */
-    public function getFormData(array $postParams)
+    public function getFormData(array $postParams): UserModel
     {
         $userModel = new UserModel();
         $userModel->password = array_key_exists("fieldPassword", $postParams) ? $postParams["fieldPassword"] : null;
@@ -50,7 +52,7 @@ class RegistrationFormHandler implements FormHandlerInterface
      * @param UserModel $userModel
      * @return bool
      */
-    public function emptyFormModel($userModel)
+    public function emptyFormModel($userModel): bool
     {
         return (!$userModel->password || !$userModel->email || !$userModel->fullname);
     }
@@ -59,7 +61,7 @@ class RegistrationFormHandler implements FormHandlerInterface
      * @param array $postParams
      * @return bool
      */
-    public function emptyFormPostParam(array $postParams)
+    public function emptyFormPostParam(array $postParams): bool
     {
         return (!array_key_exists("fieldEmail", $postParams)
             || !array_key_exists("fieldPassword", $postParams)

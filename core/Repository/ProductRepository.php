@@ -23,7 +23,7 @@ class ProductRepository
     /**
      * @return Product[]
      */
-    public function getProductList()
+    public function getProductList(): array
     {
         $stm = $this->connection->prepare("SELECT * FROM product");
         $stm->execute();

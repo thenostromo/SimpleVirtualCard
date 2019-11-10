@@ -2,9 +2,8 @@
 namespace Manager;
 
 use DTO\CartItemModel;
-use DTO\ProductModel;
-use Entity\Product;
-use Maker\DTOMaker;
+use DTO\CartItemViewModel;
+use Entity\CartItem;
 use Repository\CartItemRepository;
 
 class CartManager
@@ -24,29 +23,35 @@ class CartManager
     /**
      * @param CartItemModel $cartItemModel
      */
-    public function addCartItem(CartItemModel $cartItemModel)
+    public function changeCart(CartItemModel $cartItemModel)
     {
+        /** @var CartItem|bool $existCartItem */
         $existCartItem = $this->cartItemRepository->getCartItem($cartItemModel);
 
-        if ($existCartItem) {
-            $existQuantity = $existCartItem->getQuantity();
-            $newQuantity = $existQuantity + intval($cartItemModel->quantity);
-            $existCartItem->setQuantity($newQuantity);
+        if ($existCartItem instanceof CartItem)
+        {
+            $newQuantity = intval($cartItemModel->quantity);
 
+            if ($newQuantity === 0)
+            {
+                $this->cartItemRepository->removeCartItem($existCartItem);
+            }
+
+            $existCartItem->setQuantity($newQuantity);
             $this->cartItemRepository->updateCartItem($existCartItem);
-        } else {
+        }
+        else
+        {
             $this->cartItemRepository->addCartItem($cartItemModel);
         }
     }
 
     /**
-     * @return ProductModel[] array
+     * @param array $sessionUser
+     * @return CartItemViewModel[]
      */
-    public function getProductList()
+    public function getCartItemViewList(array $sessionUser): array
     {
-        /** @var Product[] $productList */
-        $productList = $this->productRepository->getProductList();
-
-        return DTOMaker::makeProductModelListFromArray($productList);
+        return $this->cartItemRepository->getCartItemViewListByUser($sessionUser);
     }
 }

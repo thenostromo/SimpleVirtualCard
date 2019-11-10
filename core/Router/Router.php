@@ -3,6 +3,8 @@ namespace Router;
 
 use Controller\Api\CartApiController;
 use Controller\DefaultController;
+use Controller\OrderController;
+use Controller\ProfileController;
 use Controller\SecurityController;
 use Provider\RouteProvider;
 
@@ -24,12 +26,13 @@ class Router
         $this->controllers = [
             'default' => new DefaultController(),
             'security' => new SecurityController(),
+            'profile' => new ProfileController(),
+            'order' => new OrderController(),
             'cartApi' => new CartApiController()
         ];
     }
 
     /**
-     * @param array $request
      * @return string
      */
     public function handleRequest()
@@ -38,7 +41,8 @@ class Router
 
         $response = null;
         $response = $this->handleApiRequests($url, $_POST);
-        if (!$response) {
+        if (!$response)
+        {
             $response = $this->handleMainPages($url, $_POST);
         }
         return (!$response)
@@ -49,25 +53,31 @@ class Router
     /**
      * @param string $url
      * @param array $postParams
-     * @return mixed
+     * @return string|null
      */
-    private function handleApiRequests(string $url, array $postParams = [])
+    private function handleApiRequests(string $url, array $postParams = []): ?string
     {
-        switch($url) {
+        switch($url)
+        {
             case($this->routeProvider->getRoute(RouteProvider::API_CART_API_CONTROLLER_ADD_PRODUCT)):
-                return $this->controllers['cartApi']->addProduct($postParams);
+            case($this->routeProvider->getRoute(RouteProvider::API_CART_API_CONTROLLER_ADD_PRODUCT_UNIT)):
+            case($this->routeProvider->getRoute(RouteProvider::API_CART_API_CONTROLLER_REMOVE_PRODUCT_UNIT)):
+            case($this->routeProvider->getRoute(RouteProvider::API_CART_API_CONTROLLER_REMOVE_PRODUCT)):
+                return $this->controllers['cartApi']->changeCart($postParams);
                 break;
         }
+        return null;
     }
 
     /**
      * @param string $url
      * @param array $postParams
-     * @return string
+     * @return string|null
      */
-    private function handleMainPages(string $url, array $postParams = [])
+    private function handleMainPages(string $url, array $postParams = []): ?string
     {
-        switch($url) {
+        switch($url)
+        {
             case($this->routeProvider->getRoute(RouteProvider::DEFAULT_CONTROLLER_HOMEPAGE)):
                 return $this->controllers['default']->homepage();
                 break;
@@ -80,6 +90,13 @@ class Router
             case($this->routeProvider->getRoute(RouteProvider::SECURITY_CONTROLLER_LOGOUT)):
                 return $this->controllers['security']->logout();
                 break;
+            case($this->routeProvider->getRoute(RouteProvider::PROFILE_CONTROLLER_CART)):
+                return $this->controllers['profile']->cart();
+                break;
+            case($this->routeProvider->getRoute(RouteProvider::ORDER_CONTROLLER_MAKE_ORDER)):
+                return $this->controllers['order']->makeOrder($postParams);
+                break;
         }
+        return null;
     }
 }

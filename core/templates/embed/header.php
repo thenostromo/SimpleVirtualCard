@@ -11,10 +11,10 @@
         <div class="col-4 d-flex justify-content-end align-items-center">
             <?php if ($user["isAuthorized"]): ?>
                 <span class="text-muted">
-                    Your balance: <span id="userBalance"><?php echo $user["balance"]; ?></span>$
+                    Your balance: <span id="userBalance"><?php echo round($user["balance"], 2); ?></span>$
                 </span>
                 &nbsp;
-                <a class="btn btn-sm btn-outline-secondary" href="<?php echo $url['logout']; ?>">Your Cart</a>
+                <a class="btn btn-sm btn-outline-secondary" href="<?php echo $url['profileCart']; ?>">Your Cart</a>
                 &nbsp;
                 <a class="btn btn-sm btn-outline-secondary" href="<?php echo $url['logout']; ?>">Logout</a>
             <?php else: ?>

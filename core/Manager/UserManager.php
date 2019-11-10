@@ -36,7 +36,8 @@ class UserManager
      */
     public function createUser(UserModel $userModel)
     {
-        if ($this->userRepository->isUserExist($userModel)) {
+        if ($this->userRepository->isUserExist($userModel))
+        {
             throw new UserAlreadyExistException();
         }
 
@@ -58,7 +59,8 @@ class UserManager
         /** @var User $foundUser */
         $foundUser = $this->userRepository->getUserInfoByEmail($userModel->email);
 
-        if (!$foundUser || !$this->passwordWorker->isPasswordValid($userModel->password, $foundUser->getPassword(), $foundUser->getSalt())) {
+        if (!$foundUser || !$this->passwordWorker->isPasswordValid($userModel->password, $foundUser->getPassword(), $foundUser->getSalt()))
+        {
             throw new WrongCredentialsException();
         }
 

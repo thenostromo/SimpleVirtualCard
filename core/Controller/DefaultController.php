@@ -9,7 +9,7 @@ class DefaultController extends GeneralController
     /**
      * @return string
      */
-    public function homepage()
+    public function homepage(): string
     {
         $productManager = new ProductManager();
 
@@ -25,7 +25,7 @@ class DefaultController extends GeneralController
     /**
      * @return string
      */
-    public function error404()
+    public function error404(): string
     {
         return $this->renderTemplate('error404.php',  [
             'pageTitle' => 'Error 404',

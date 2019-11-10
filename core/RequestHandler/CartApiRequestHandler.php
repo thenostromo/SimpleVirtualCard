@@ -25,12 +25,13 @@ class CartApiRequestHandler
      * @param array $postParams
      * @param string $target
      * @throws EmptyRequiredParamsException
-     * @throws UserAlreadyExistException
      */
     public function handleRequest(array $postParams, string $target)
     {
-        if ($target === RouteProvider::API_CART_API_CONTROLLER_ADD_PRODUCT) {
-            $this->handleAddProduct($postParams);
+        if ($target === RouteProvider::API_CART_API_CONTROLLER_ADD_PRODUCT
+            || $target === RouteProvider::API_CART_API_CONTROLLER_ADD_PRODUCT_UNIT
+            || $target === RouteProvider::API_CART_API_CONTROLLER_REMOVE_PRODUCT_UNIT) {
+            $this->handleChangeCart($postParams);
         }
     }
 
@@ -38,9 +39,10 @@ class CartApiRequestHandler
      * @param array $postParams
      * @throws EmptyRequiredParamsException
      */
-    private function handleAddProduct(array $postParams)
+    private function handleChangeCart(array $postParams)
     {
-        if ($this->emptyAddProductPostParam($postParams)) {
+        if ($this->emptyChangeCartPostParam($postParams))
+        {
             throw new EmptyRequiredParamsException();
         }
 
@@ -48,7 +50,8 @@ class CartApiRequestHandler
         $cartItemModel->productId = FormValidator::prepareData($postParams["productId"]);
         $cartItemModel->quantity = FormValidator::prepareData($postParams["quantityValue"]);
 
-        if ($this->emptyAddProductModelParam($cartItemModel)) {
+        if ($this->emptyChangeCartModelParam($cartItemModel))
+        {
             throw new EmptyRequiredParamsException();
         }
 
@@ -59,7 +62,7 @@ class CartApiRequestHandler
      * @param array $postParams
      * @return bool
      */
-    public function emptyAddProductPostParam(array $postParams)
+    public function emptyChangeCartPostParam(array $postParams): bool
     {
         return (!array_key_exists("productId", $postParams)
             || !array_key_exists("quantityValue", $postParams));
@@ -69,15 +72,15 @@ class CartApiRequestHandler
      * @param CartItemModel $cartItemModel
      * @return bool
      */
-    public function emptyAddProductModelParam(CartItemModel $cartItemModel)
+    public function emptyChangeCartModelParam(CartItemModel $cartItemModel): bool
     {
-        return (!$cartItemModel->productId || !$cartItemModel->quantity);
+        return ($cartItemModel->productId === "" || $cartItemModel->quantity === "");
     }
 
     /**
      * @return CartItemModel
      */
-    public function getCartItemModel()
+    public function getCartItemModel(): CartItemModel
     {
         return $this->cartItemModel;
     }

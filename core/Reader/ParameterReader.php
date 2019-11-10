@@ -22,13 +22,14 @@ class ParameterReader
     /**
      * @return array
      */
-    private function readEnvFile()
+    private function readEnvFile(): array
     {
         $parameters = [];
         $configFile = __DIR__."../../../config/.env";
         $content = file_get_contents($configFile);
         $rows = explode("\n", $content);
-        foreach ($rows as $row) {
+        foreach ($rows as $row)
+        {
             $paramParts = explode("=", $row);
             $parameters[$paramParts[0]] = $paramParts[1];
         }

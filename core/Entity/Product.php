@@ -25,9 +25,9 @@ class Product
 
     /**
      * @param string $id
-     * @return string
+     * @return Product
      */
-    public function setId(string $id)
+    public function setId(string $id): Product
     {
         $this->id = $id;
         return $this;
@@ -36,16 +36,16 @@ class Product
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
     /**
      * @param string $name
-     * @return $this
+     * @return Product
      */
-    public function setName(string $name)
+    public function setName(string $name): Product
     {
         $this->name = $name;
         return $this;
@@ -54,16 +54,16 @@ class Product
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
      * @param string $price
-     * @return $this
+     * @return Product
      */
-    public function setPrice(string $price)
+    public function setPrice(string $price): Product
     {
         $this->price = $price;
         return $this;
@@ -72,7 +72,7 @@ class Product
     /**
      * @return string
      */
-    public function getPrice()
+    public function getPrice(): string
     {
         return $this->price;
     }

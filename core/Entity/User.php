@@ -39,10 +39,10 @@ class User
     }
 
     /**
-     * @param int|null $id
-     * @return $this
+     * @param int $id
+     * @return User
      */
-    public function setId($id)
+    public function setId(int $id): User
     {
         $this->id = $id;
         return $this;
@@ -51,16 +51,16 @@ class User
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
     /**
      * @param string $email
-     * @return $this
+     * @return User
      */
-    public function setEmail(string $email)
+    public function setEmail(string $email): User
     {
         $this->email = $email;
         return $this;
@@ -69,16 +69,16 @@ class User
     /**
      * @return string
      */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
     /**
      * @param string $password
-     * @return $this
+     * @return User
      */
-    public function setPassword(string $password)
+    public function setPassword(string $password): User
     {
         $this->password = $password;
         return $this;
@@ -87,16 +87,16 @@ class User
     /**
      * @return string
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
 
     /**
      * @param string $salt
-     * @return $this
+     * @return User
      */
-    public function setSalt(string $salt)
+    public function setSalt(string $salt): User
     {
         $this->salt = $salt;
         return $this;
@@ -105,16 +105,16 @@ class User
     /**
      * @return string
      */
-    public function getSalt()
+    public function getSalt(): string
     {
         return $this->salt;
     }
 
     /**
      * @param string $fullname
-     * @return $this
+     * @return User
      */
-    public function setFullname(string $fullname)
+    public function setFullname(string $fullname): User
     {
         $this->fullname = $fullname;
         return $this;
@@ -123,16 +123,16 @@ class User
     /**
      * @return string
      */
-    public function getFullname()
+    public function getFullname(): string
     {
         return $this->fullname;
     }
 
     /**
      * @param string $balance
-     * @return $this
+     * @return User
      */
-    public function setBalance(string $balance)
+    public function setBalance(string $balance): User
     {
         $this->balance = $balance;
         return $this;
@@ -141,7 +141,7 @@ class User
     /**
      * @return string
      */
-    public function getBalance()
+    public function getBalance(): string
     {
         return $this->balance;
     }
@@ -155,5 +155,6 @@ class User
 
         $this->setEmail($userArray["email"]);
         $this->setFullname($userArray["fullname"]);
+        $this->setBalance($userArray["balance"]);
     }
 }

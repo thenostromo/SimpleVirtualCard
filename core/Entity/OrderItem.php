@@ -1,12 +1,12 @@
 <?php
 namespace Entity;
 
-class CartItem
+class OrderItem
 {
     /**
      * @var int
      */
-    private $userId;
+    private $orderId;
 
     /**
      * @var int
@@ -19,28 +19,28 @@ class CartItem
     private $quantity;
 
     /**
-     * @param int $userId
-     * @return CartItem
+     * @param int $orderId
+     * @return OrderItem
      */
-    public function setUserId(int $userId): CartItem
+    public function setOrderId(int $orderId): OrderItem
     {
-        $this->userId = $userId;
+        $this->orderId = $orderId;
         return $this;
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getUserId(): string
+    public function getOrderId(): int
     {
-        return $this->userId;
+        return $this->orderId;
     }
 
     /**
      * @param int $productId
-     * @return CartItem
+     * @return OrderItem
      */
-    public function setProductId(int $productId): CartItem
+    public function setProductId(int $productId): OrderItem
     {
         $this->productId = $productId;
         return $this;
@@ -56,9 +56,9 @@ class CartItem
 
     /**
      * @param int $quantity
-     * @return CartItem
+     * @return OrderItem
      */
-    public function setQuantity(int $quantity): CartItem
+    public function setQuantity(int $quantity): OrderItem
     {
         $this->quantity = $quantity;
         return $this;

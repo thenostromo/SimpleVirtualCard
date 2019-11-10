@@ -90,11 +90,6 @@
                         quantityValue: quantityValue
                     },
                     success: function(){
-                        let currentBalance = parseFloat(document.getElementById('userBalance').innerText);
-                        let productTotalPrice = productPrice * quantityValue;
-                        let newBalance = currentBalance - productTotalPrice;
-
-                        document.getElementById('userBalance').innerText = newBalance;
                         document.getElementById('successFieldQuantity_' + productId).style.display = 'block';
                     },
                     error: function(){

@@ -15,22 +15,27 @@ class SecurityController extends GeneralController
      * @param array $postParams
      * @return string
      */
-    public function login(array $postParams)
+    public function login(array $postParams): string
     {
-        if ($this->sessionManager->isAuthorizedUser()) {
+        if ($this->sessionManager->isAuthorizedUser())
+        {
             $this->redirect($this->routeProvider->getUrl(RouteProvider::DEFAULT_CONTROLLER_HOMEPAGE));
         }
 
         $errorMessage = null;
         $userModel = new UserModel();
 
-        if (count($postParams) > 0) {
+        if (count($postParams) > 0)
+        {
             $authorizationFormHandler = new AuthorizationFormHandler();
             $userModel = $authorizationFormHandler->getFormData($postParams);
-            try {
-                $result = $authorizationFormHandler->handleForm($postParams);
+            try
+            {
+                $authorizationFormHandler->handleForm($postParams);
                 $this->redirect($this->routeProvider->getUrl(RouteProvider::DEFAULT_CONTROLLER_HOMEPAGE));
-            } catch (WrongCredentialsException $ex) {
+            }
+            catch (EmptyRequiredParamsException|WrongCredentialsException $ex)
+            {
                 $errorMessage = "Wrong credentials.";
             }
         }
@@ -45,7 +50,7 @@ class SecurityController extends GeneralController
     /**
      * @return string
      */
-    public function logout()
+    public function logout(): string
     {
         $this->sessionManager->sessionStop();
         $this->redirect($this->routeProvider->getUrl(RouteProvider::DEFAULT_CONTROLLER_HOMEPAGE));
@@ -55,24 +60,31 @@ class SecurityController extends GeneralController
      * @param array $postParams
      * @return string
      */
-    public function registration(array $postParams)
+    public function registration(array $postParams): string
     {
-        if ($this->sessionManager->isAuthorizedUser()) {
+        if ($this->sessionManager->isAuthorizedUser())
+        {
             $this->redirect($this->routeProvider->getUrl(RouteProvider::DEFAULT_CONTROLLER_HOMEPAGE));
         }
 
         $errorMessage = null;
         $userModel = new UserModel();
 
-        if (count($postParams) > 0) {
+        if (count($postParams) > 0)
+        {
             $registrationFormHandler = new RegistrationFormHandler();
             $userModel = $registrationFormHandler->getFormData($postParams);
-            try {
-                $result = $registrationFormHandler->handleForm($postParams);
+            try
+            {
+                $registrationFormHandler->handleForm($postParams);
                 $this->redirect($this->routeProvider->getUrl(RouteProvider::SECURITY_CONTROLLER_LOGIN));
-            } catch (EmptyRequiredParamsException $ex) {
+            }
+            catch (EmptyRequiredParamsException $ex)
+            {
                 $errorMessage = "Check the correctness of the entered data";
-            } catch (UserAlreadyExistException $ex) {
+            }
+            catch (UserAlreadyExistException $ex)
+            {
                 $errorMessage = "This email is already registered.";
             }
         }

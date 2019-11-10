@@ -22,7 +22,7 @@ class ProductManager
     /**
      * @return ProductModel[] array
      */
-    public function getProductList()
+    public function getProductList(): array
     {
         /** @var Product[] $productList */
         $productList = $this->productRepository->getProductList();

@@ -7,7 +7,8 @@ class SessionManager
 {
     public function __construct()
     {
-        if (!$this->isSessionStarted()) {
+        if (!$this->isSessionStarted())
+        {
             session_start();
         }
     }
@@ -17,7 +18,8 @@ class SessionManager
      */
     public function sessionStart(User $user)
     {
-        if (!$this->isAuthorizedUser()) {
+        if (!$this->isAuthorizedUser())
+        {
             $_SESSION["id"] = $user->getId();
             $_SESSION["email"] = $user->getEmail();
             $_SESSION["fullname"] = $user->getFullname();
@@ -28,7 +30,7 @@ class SessionManager
     /**
      * @return bool
      */
-    public function isSessionStarted()
+    public function isSessionStarted(): bool
     {
         return !(session_status() == PHP_SESSION_NONE);
     }
@@ -36,7 +38,7 @@ class SessionManager
     /**
      * @return bool
      */
-    public function isAuthorizedUser()
+    public function isAuthorizedUser(): bool
     {
         return array_key_exists("id", $_SESSION) && $_SESSION["id"];
     }
@@ -44,7 +46,7 @@ class SessionManager
     /**
      * @return array
      */
-    public function getSessionInfo()
+    public function getSessionInfo(): array
     {
         return $_SESSION;
     }

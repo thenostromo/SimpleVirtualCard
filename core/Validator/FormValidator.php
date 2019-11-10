@@ -7,7 +7,7 @@ class FormValidator
      * @param string $data
      * @return string
      */
-    public static function prepareData($data)
+    public static function prepareData($data): string
     {
         $data = trim($data);
         $data = stripslashes($data);

@@ -5,18 +5,19 @@ use DTO\UserModel;
 use Manager\UserManager;
 use Validator\FormValidator;
 use Exception\EmptyRequiredParamsException;
-use Exception\UserAlreadyExistException;
+use Exception\WrongCredentialsException;
 
 class AuthorizationFormHandler implements FormHandlerInterface
 {
     /**
      * @param array $postParams
      * @throws EmptyRequiredParamsException
-     * @throws UserAlreadyExistException
+     * @throws WrongCredentialsException
      */
     public function handleForm(array $postParams)
     {
-        if ($this->emptyFormPostParam($postParams)) {
+        if ($this->emptyFormPostParam($postParams))
+        {
             throw new EmptyRequiredParamsException();
         }
 
@@ -24,7 +25,8 @@ class AuthorizationFormHandler implements FormHandlerInterface
         $userModel->password = FormValidator::prepareData($postParams["fieldPassword"]);
         $userModel->email = FormValidator::prepareData($postParams["fieldEmail"]);
 
-        if ($this->emptyFormModel($userModel)) {
+        if ($this->emptyFormModel($userModel))
+        {
             throw new EmptyRequiredParamsException();
         }
 
@@ -36,7 +38,7 @@ class AuthorizationFormHandler implements FormHandlerInterface
      * @param array $postParams
      * @return UserModel
      */
-    public function getFormData(array $postParams)
+    public function getFormData(array $postParams): UserModel
     {
         $userModel = new UserModel();
         $userModel->password = array_key_exists("fieldPassword", $postParams) ? $postParams["fieldPassword"] : null;
@@ -48,7 +50,7 @@ class AuthorizationFormHandler implements FormHandlerInterface
      * @param UserModel $userModel
      * @return bool
      */
-    public function emptyFormModel($userModel)
+    public function emptyFormModel($userModel): bool
     {
         return (!$userModel->password || !$userModel->email);
     }
@@ -57,7 +59,7 @@ class AuthorizationFormHandler implements FormHandlerInterface
      * @param array $postParams
      * @return bool
      */
-    public function emptyFormPostParam(array $postParams)
+    public function emptyFormPostParam(array $postParams): bool
     {
         return (!array_key_exists("fieldEmail", $postParams)
             || !array_key_exists("fieldPassword", $postParams));

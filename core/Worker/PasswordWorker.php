@@ -10,9 +10,10 @@ class PasswordWorker
      * @param string $cryptMethod
      * @return string
      */
-    private function getCryptedSalt($salt, $cryptMethod)
+    private function getCryptedSalt(string $salt, string $cryptMethod): string
     {
-        if ($cryptMethod === self::CRYPT_METHOD_BLOWFISH) {
+        if ($cryptMethod === self::CRYPT_METHOD_BLOWFISH)
+        {
             return "$2a$05$" . $salt . "$";
         }
     }
@@ -44,7 +45,7 @@ class PasswordWorker
      * @param string $salt
      * @return bool
      */
-    public function isPasswordValid(string $checkingPassword, string $savedPassword, string $salt)
+    public function isPasswordValid(string $checkingPassword, string $savedPassword, string $salt): bool
     {
         $checkingPassword = crypt($checkingPassword, $salt);
         return ($savedPassword == $checkingPassword);
