@@ -232,6 +232,7 @@
             },
             success: function(){
                 totalPriceGeneral = totalPriceGeneral + parseFloat(pricePerUnit);
+                totalPriceItems = totalPriceItems + parseFloat(pricePerUnit);
                 setNewTotalPrice(totalPriceGeneral.toFixed(2));
 
                 document.getElementById('indicatorItemPrice_' + productId).innerText = newItemPrice.toFixed(2);
@@ -261,6 +262,7 @@
             },
             success: function(){
                 totalPriceGeneral = totalPriceGeneral - pricePerUnit;
+                totalPriceItems = totalPriceItems - pricePerUnit;
                 setNewTotalPrice(totalPriceGeneral.toFixed(2));
 
                 if (unitQuantity === 1) {
@@ -291,6 +293,7 @@
             },
             success: function(){
                 totalPriceGeneral = totalPriceGeneral - itemPrice;
+                totalPriceItems = totalPriceItems - itemPrice;
                 setNewTotalPrice(totalPriceGeneral.toFixed(2));
 
                 document.getElementById('itemRow_' + productId).style.display = "none";
